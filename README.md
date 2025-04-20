@@ -1,7 +1,6 @@
 transaksi toko ban (test)
-instalasi
 # Clone repositori
-git clone https://github.com/username/toko-ban-web.git
+git clone https://github.com/tholeteplok/toko-ban-web.git
 cd toko-ban-web
 
 # Inisialisasi proyek
