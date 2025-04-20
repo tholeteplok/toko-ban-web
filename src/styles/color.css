@@ -1,0 +1,12 @@
+:root {
+  --bridgestone-red: #e31937;
+  --dunlop-yellow: #ffd700;
+  --gt-blue: #005baa;
+}
+
+.getBrandColor(brand) {
+  if (brand === 'Bridgestone') return 'var(--bridgestone-red)';
+  if (brand === 'Dunlop') return 'var(--dunlop-yellow)';
+  if (brand === 'GT') return 'var(--gt-blue)';
+  return 'var(--primary-grey)';
+}
