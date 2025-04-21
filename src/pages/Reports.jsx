@@ -55,15 +55,15 @@ export default function Reports() {
       .gte('created_at', startDate.toISOString())
       .lte('created_at', endDate.toISOString())
       .order('created_at', { ascending: true });
-    
+
     if (data) {
       const grouped = data.reduce((acc, transaction) => {
         const date = new Date(transaction.created_at).toLocaleDateString();
         acc[date] = (acc[date] || 0) + transaction.total;
         return acc;
       }, {});
-      
-      setDailyData(Object.entries(grouped).map(([date, total]) => ({ date, total }));
+
+      setDailyData(Object.entries(grouped).map(([date, total]) => ({ date, total })));
     }
   };
 
@@ -71,7 +71,7 @@ export default function Reports() {
     const { data } = await supabase
       .from('transactions')
       .select('created_at, total');
-    
+
     if (data) {
       const grouped = data.reduce((acc, transaction) => {
         const date = new Date(transaction.created_at);
@@ -79,12 +79,12 @@ export default function Reports() {
         acc[monthYear] = (acc[monthYear] || 0) + transaction.total;
         return acc;
       }, {});
-      
-      setMonthlyData(Object.entries(grouped).map(([monthYear, total]) => ({ 
-        month: monthYear.split('-')[1], 
-        year: monthYear.split('-')[0], 
-        total 
-      }));
+
+      setMonthlyData(Object.entries(grouped).map(([monthYear, total]) => ({
+        month: monthYear.split('-')[1],
+        year: monthYear.split('-')[0],
+        total
+      })));
     }
   };
 
@@ -92,15 +92,15 @@ export default function Reports() {
     const { data } = await supabase
       .from('transactions')
       .select('created_at, total');
-    
+
     if (data) {
       const grouped = data.reduce((acc, transaction) => {
         const year = new Date(transaction.created_at).getFullYear();
         acc[year] = (acc[year] || 0) + transaction.total;
         return acc;
       }, {});
-      
-      setYearlyData(Object.entries(grouped).map(([year, total]) => ({ year, total }));
+
+      setYearlyData(Object.entries(grouped).map(([year, total]) => ({ year, total })));
     }
   };
 
@@ -108,7 +108,7 @@ export default function Reports() {
     const { data } = await supabase
       .from('transaction_items')
       .select('product_id, products(name, brand), quantity, price');
-    
+
     if (data) {
       const grouped = data.reduce((acc, item) => {
         const product = item.products;
@@ -124,7 +124,7 @@ export default function Reports() {
         acc[product.name].revenue += item.quantity * item.price;
         return acc;
       }, {});
-      
+
       setProductSales(Object.values(grouped));
     }
   };
@@ -157,7 +157,7 @@ export default function Reports() {
               </Grid>
             </LocalizationProvider>
           </Paper>
-          
+
           <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <Tabs value={value} onChange={handleChange}>
@@ -172,12 +172,12 @@ export default function Reports() {
                 Penjualan Harian
               </Typography>
               <div style={{ height: '400px' }}>
-                <LineChart 
-                  data={dailyData} 
-                  xKey="date" 
-                  yKey="total" 
-                  xLabel="Tanggal" 
-                  yLabel="Total Penjualan" 
+                <LineChart
+                  data={dailyData}
+                  xKey="date"
+                  yKey="total"
+                  xLabel="Tanggal"
+                  yLabel="Total Penjualan"
                 />
               </div>
             </TabPanel>
@@ -186,12 +186,12 @@ export default function Reports() {
                 Penjualan Bulanan
               </Typography>
               <div style={{ height: '400px' }}>
-                <BarChart 
-                  data={monthlyData} 
-                  xKey="month" 
-                  yKey="total" 
-                  xLabel="Bulan" 
-                  yLabel="Total Penjualan" 
+                <BarChart
+                  data={monthlyData}
+                  xKey="month"
+                  yKey="total"
+                  xLabel="Bulan"
+                  yLabel="Total Penjualan"
                   groupBy="year"
                 />
               </div>
@@ -201,12 +201,12 @@ export default function Reports() {
                 Penjualan Tahunan
               </Typography>
               <div style={{ height: '400px' }}>
-                <BarChart 
-                  data={yearlyData} 
-                  xKey="year" 
-                  yKey="total" 
-                  xLabel="Tahun" 
-                  yLabel="Total Penjualan" 
+                <BarChart
+                  data={yearlyData}
+                  xKey="year"
+                  yKey="total"
+                  xLabel="Tahun"
+                  yLabel="Total Penjualan"
                 />
               </div>
             </TabPanel>
@@ -221,12 +221,12 @@ export default function Reports() {
                       Jumlah Terjual
                     </Typography>
                     <div style={{ height: '300px' }}>
-                      <BarChart 
-                        data={productSales} 
-                        xKey="name" 
-                        yKey="quantity" 
-                        xLabel="Produk" 
-                        yLabel="Jumlah Terjual" 
+                      <BarChart
+                        data={productSales}
+                        xKey="name"
+                        yKey="quantity"
+                        xLabel="Produk"
+                        yLabel="Jumlah Terjual"
                         colorBy="brand"
                       />
                     </div>
@@ -238,12 +238,12 @@ export default function Reports() {
                       Pendapatan per Produk
                     </Typography>
                     <div style={{ height: '300px' }}>
-                      <BarChart 
-                        data={productSales} 
-                        xKey="name" 
-                        yKey="revenue" 
-                        xLabel="Produk" 
-                        yLabel="Pendapatan (Rp)" 
+                      <BarChart
+                        data={productSales}
+                        xKey="name"
+                        yKey="revenue"
+                        xLabel="Produk"
+                        yLabel="Pendapatan (Rp)"
                         colorBy="brand"
                       />
                     </div>
