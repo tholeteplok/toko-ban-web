@@ -4,7 +4,7 @@ import { BarChart, LineChart } from '../components/Charts';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { Grid, Paper, Typography, Box, Tabs, Tab } from '@mui/material';
+import { Grid, Paper, Typography, Box, Tabs, Tab, TextField } from '@mui/material';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 
@@ -56,14 +56,15 @@ export default function Reports() {
       .lte('created_at', endDate.toISOString())
       .order('created_at', { ascending: true });
     
-    // Group by day
-    const grouped = data.reduce((acc, transaction) => {
-      const date = new Date(transaction.created_at).toLocaleDateString();
-      acc[date] = (acc[date] || 0) + transaction.total;
-      return acc;
-    }, {});
-    
-    setDailyData(Object.entries(grouped).map(([date, total]) => ({ date, total }))
+    if (data) {
+      const grouped = data.reduce((acc, transaction) => {
+        const date = new Date(transaction.created_at).toLocaleDateString();
+        acc[date] = (acc[date] || 0) + transaction.total;
+        return acc;
+      }, {});
+      
+      setDailyData(Object.entries(grouped).map(([date, total]) => ({ date, total }));
+    }
   };
 
   const fetchMonthlyData = async () => {
@@ -71,19 +72,20 @@ export default function Reports() {
       .from('transactions')
       .select('created_at, total');
     
-    // Group by month
-    const grouped = data.reduce((acc, transaction) => {
-      const date = new Date(transaction.created_at);
-      const monthYear = `${date.getFullYear()}-${date.getMonth() + 1}`;
-      acc[monthYear] = (acc[monthYear] || 0) + transaction.total;
-      return acc;
-    }, {});
-    
-    setMonthlyData(Object.entries(grouped).map(([monthYear, total]) => ({ 
-      month: monthYear.split('-')[1], 
-      year: monthYear.split('-')[0], 
-      total 
-    })));
+    if (data) {
+      const grouped = data.reduce((acc, transaction) => {
+        const date = new Date(transaction.created_at);
+        const monthYear = `${date.getFullYear()}-${date.getMonth() + 1}`;
+        acc[monthYear] = (acc[monthYear] || 0) + transaction.total;
+        return acc;
+      }, {});
+      
+      setMonthlyData(Object.entries(grouped).map(([monthYear, total]) => ({ 
+        month: monthYear.split('-')[1], 
+        year: monthYear.split('-')[0], 
+        total 
+      }));
+    }
   };
 
   const fetchYearlyData = async () => {
@@ -91,14 +93,15 @@ export default function Reports() {
       .from('transactions')
       .select('created_at, total');
     
-    // Group by year
-    const grouped = data.reduce((acc, transaction) => {
-      const year = new Date(transaction.created_at).getFullYear();
-      acc[year] = (acc[year] || 0) + transaction.total;
-      return acc;
-    }, {});
-    
-    setYearlyData(Object.entries(grouped).map(([year, total]) => ({ year, total }));
+    if (data) {
+      const grouped = data.reduce((acc, transaction) => {
+        const year = new Date(transaction.created_at).getFullYear();
+        acc[year] = (acc[year] || 0) + transaction.total;
+        return acc;
+      }, {});
+      
+      setYearlyData(Object.entries(grouped).map(([year, total]) => ({ year, total }));
+    }
   };
 
   const fetchProductSales = async () => {
@@ -106,23 +109,24 @@ export default function Reports() {
       .from('transaction_items')
       .select('product_id, products(name, brand), quantity, price');
     
-    // Group by product
-    const grouped = data.reduce((acc, item) => {
-      const product = item.products;
-      if (!acc[product.name]) {
-        acc[product.name] = {
-          name: product.name,
-          brand: product.brand,
-          quantity: 0,
-          revenue: 0
-        };
-      }
-      acc[product.name].quantity += item.quantity;
-      acc[product.name].revenue += item.quantity * item.price;
-      return acc;
-    }, {});
-    
-    setProductSales(Object.values(grouped));
+    if (data) {
+      const grouped = data.reduce((acc, item) => {
+        const product = item.products;
+        if (!acc[product.name]) {
+          acc[product.name] = {
+            name: product.name,
+            brand: product.brand,
+            quantity: 0,
+            revenue: 0
+          };
+        }
+        acc[product.name].quantity += item.quantity;
+        acc[product.name].revenue += item.quantity * item.price;
+        return acc;
+      }, {});
+      
+      setProductSales(Object.values(grouped));
+    }
   };
 
   return (
