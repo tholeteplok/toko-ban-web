@@ -3,13 +3,15 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  base: '/', // Pastikan base path root
   server: {
-    host: '0.0.0.0',
+    host: true,
     port: 3000,
     strictPort: true,
-    hmr: {
-      clientPort: 3000 // Wajib untuk WSL 2
-    }
+    open: true
   },
-  base: '/' // HAPUS atau set ke '/'
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true
+  }
 })
