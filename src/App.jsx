@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
+
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
@@ -10,26 +11,29 @@ import Settings from './pages/Settings';
 
 export default function App() {
   const [user, setUser] = React.useState(null);
-  
+
   React.useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
     });
-    
-    // Check existing session
+
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
     };
-    
+
     getSession();
+
+    return () => {
+      listener.subscription.unsubscribe(); // Clean up listener on unmount
+    };
   }, []);
-  
+
   return (
     <Router>
       <Routes>
         <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
-        <Route path="/" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+        <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
         <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="/products" element={user ? <Products /> : <Navigate to="/login" />} />
         <Route path="/transactions" element={user ? <Transactions /> : <Navigate to="/login" />} />
