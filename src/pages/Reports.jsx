@@ -63,7 +63,7 @@ export default function Reports() {
       return acc;
     }, {});
     
-    setDailyData(Object.entries(grouped).map(([date, total]) => ({ date, total }));
+    setDailyData(Object.entries(grouped).map(([date, total]) => ({ date, total }))
   };
 
   const fetchMonthlyData = async () => {
