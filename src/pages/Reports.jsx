@@ -84,7 +84,7 @@ export default function Reports() {
         month: monthYear.split('-')[1], 
         year: monthYear.split('-')[0], 
         total 
-      }));
+      })))
     }
   };
 
