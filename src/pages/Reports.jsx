@@ -100,7 +100,7 @@ export default function Reports() {
         return acc;
       }, {});
       
-      setYearlyData(Object.entries(grouped).map(([year, total]) => ({ year, total }));
+      setYearlyData(Object.entries(grouped).map(([year, total]) => ({ year, total })))
     }
   };
 
