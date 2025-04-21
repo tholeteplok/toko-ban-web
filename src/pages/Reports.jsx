@@ -64,7 +64,7 @@ export default function Reports() {
       }, {});
       
       setDailyData(Object.entries(grouped).map(([date, total]) => ({ date, total }))
-    }
+    )
   };
 
   const fetchMonthlyData = async () => {
