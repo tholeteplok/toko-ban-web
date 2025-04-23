@@ -11,23 +11,28 @@ import Settings from './pages/Settings';
 
 export default function App() {
   const [user, setUser] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
+      setLoading(false);
     });
 
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
+      setLoading(false);
     };
 
     getSession();
 
     return () => {
-      listener.subscription.unsubscribe(); // Clean up listener on unmount
+      listener.subscription.unsubscribe();
     };
   }, []);
+
+  if (loading) return <div className="p-4 text-gray-500">Memuat...</div>;
 
   return (
     <Router>
